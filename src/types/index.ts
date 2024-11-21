@@ -17,3 +17,9 @@ export interface User {
   role: string;
   status: string;
 }
+
+export interface Role {
+  id: number;
+  name: string;
+  permissions: string[];
+}
