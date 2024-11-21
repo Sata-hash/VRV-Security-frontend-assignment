@@ -9,3 +9,11 @@ export interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+}
