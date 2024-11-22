@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { User } from "../types";
+import { Role, User } from "../types";
 import { api } from "../services/api";
 import UserModal from "./UserModal";
 import { UserFormData } from "../schemas/userSchema";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<
     Omit<User, "id"> & { id?: string }
   >({
     name: "",
     email: "",
-    role: "user",
+    role: "User",
     status: "active",
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -20,6 +21,7 @@ const UserManagement: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
+    fetchRoles();
   }, []);
 
   const fetchUsers = async () => {
@@ -33,11 +35,22 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const fetchRoles = async () => {
+    try {
+      const data = await api.getRoles();
+      setRoles(data);
+      if (data.length > 0) {
+        setCurrentUser((prev) => ({ ...prev, role: data[0].name }));
+      }
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
   const handleAddNew = () => {
     setCurrentUser({
       name: "",
       email: "",
-      role: "user",
+      role: "User",
       status: "active",
     });
     setIsEditing(false);
@@ -155,6 +168,7 @@ const UserManagement: React.FC = () => {
       <UserModal
         showModal={showModal}
         user={currentUser}
+        roles={roles}
         isEditing={isEditing}
         onClose={() => setShowModal(false)}
         onSave={handleSave}

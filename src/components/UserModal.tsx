@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../types";
+import { Role, User } from "../types";
 import { userSchema, UserFormData } from "../schemas/userSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 interface UserModalProps {
   showModal: boolean;
   user: Omit<User, "id"> & { id?: string };
+  roles: Role[];
   isEditing: boolean;
   onClose: () => void;
   onSave: (data: UserFormData) => void;
@@ -15,6 +16,7 @@ interface UserModalProps {
 const UserModal: React.FC<UserModalProps> = ({
   showModal,
   user,
+  roles,
   isEditing,
   onClose,
   onSave,
@@ -84,8 +86,11 @@ const UserModal: React.FC<UserModalProps> = ({
                   errors.role ? "border-red-500" : "border-gray-300"
                 }`}
               >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
+                {roles.map((role) => (
+                  <option key={role.id} value={role.name}>
+                    {role.name}
+                  </option>
+                ))}
               </select>
               {errors.role && (
                 <p className="text-red-500 text-xs mt-1 text-left">

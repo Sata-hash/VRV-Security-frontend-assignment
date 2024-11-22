@@ -30,6 +30,11 @@ export const api = {
     return response.data;
   },
 
+  async updateRole(id: string, role: Omit<Role, "id">) {
+    const response = await axios.put<Role>(`${API_URL}/roles/${id}`, role);
+    return response.data;
+  },
+
   async createRole(role: Omit<Role, "id">) {
     const response = await axios.post<Role>(`${API_URL}/roles`, role);
     return response.data;
