@@ -1,0 +1,80 @@
+{
+  "users": [
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "role": "User",
+      "status": "active"
+    },
+    {
+      "id": "e7bd",
+      "name": "sdf",
+      "email": "sdfs",
+      "role": "User",
+      "status": "active"
+    },
+    {
+      "id": "dd26",
+      "name": "sdsfdd",
+      "email": "sddfds",
+      "role": "moderator",
+      "status": "active"
+    },
+    {
+      "id": "c103",
+      "name": "atul",
+      "email": "qsda@dwd.sdfs",
+      "role": "User",
+      "status": "active"
+    },
+    {
+      "id": "a7f7",
+      "name": "dfsd",
+      "email": "dsfsd",
+      "role": "User",
+      "status": "active"
+    },
+    {
+      "id": "b14b",
+      "name": "new user",
+      "email": "dsnsbfjks",
+      "role": "User",
+      "status": "active"
+    },
+    {
+      "id": "4bf4",
+      "name": "admin",
+      "email": "admin@gmail.com",
+      "role": "admin",
+      "status": "active"
+    }
+  ],
+  "roles": [
+    {
+      "id": "1",
+      "name": "Admin",
+      "permissions": [
+        "read",
+        "write",
+        "delete"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "User",
+      "permissions": [
+        "read",
+        "write"
+      ]
+    },
+    {
+      "id": "5e66",
+      "name": "moderator",
+      "permissions": [
+        "read",
+        "write"
+      ]
+    }
+  ]
+}
