@@ -11,11 +11,11 @@ export interface SidebarProps {
 }
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
-  role: string;
-  status: string;
+  role: "user" | "admin";
+  status: "active" | "inactive";
 }
 
 export interface Role {

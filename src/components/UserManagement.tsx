@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { User } from "../types";
 import { api } from "../services/api";
 import UserModal from "./UserModal";
+import { UserFormData } from "../schemas/userSchema";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -49,23 +50,17 @@ const UserManagement: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleUserChange = (field: keyof Omit<User, "id">, value: string) => {
-    setCurrentUser({ ...currentUser, [field]: value });
-  };
-
-  const handleSave = async () => {
+  const handleSave = async (formData: UserFormData) => {
     try {
       if (isEditing && currentUser.id) {
-        // Update existing user
-        const updatedUser = await api.updateUser(currentUser.id, currentUser);
+        const updatedUser = await api.updateUser(currentUser.id, formData);
         setUsers(
           users.map((user) =>
             user.id === currentUser.id ? updatedUser : user,
           ),
         );
       } else {
-        // Create new user
-        const newUser = await api.createUser(currentUser);
+        const newUser = await api.createUser(formData);
         setUsers([...users, newUser]);
       }
       setShowModal(false);
@@ -163,7 +158,6 @@ const UserManagement: React.FC = () => {
         isEditing={isEditing}
         onClose={() => setShowModal(false)}
         onSave={handleSave}
-        onUserChange={handleUserChange}
       />
     </div>
   );
