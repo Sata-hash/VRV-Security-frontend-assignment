@@ -1,25 +1,71 @@
-import { User } from "../types/index";
+import React, { useEffect, useState } from "react";
+import { User, Role } from "../types";
+import { api } from "../services/api";
+import UserModal from "./UserModal";
 
 const UserManagement: React.FC = () => {
-  const users: User[] = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      role: "Admin",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Jane Doe2",
-      email: "jane@example.com2",
-      role: "User",
-      status: "inactive",
-    },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [newUser, setNewUser] = useState<Omit<User, "id">>({
+    name: "",
+    email: "",
+    role: "User",
+    status: "active",
+  });
+  const [loading, setLoading] = useState(true);
+  const handleUserChange = (field: keyof Omit<User, "id">, value: string) => {
+    setNewUser({ ...newUser, [field]: value });
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const data = await api.getUsers();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addUser = async () => {
+    try {
+      const user = await api.createUser(newUser);
+      setUsers([...users, user]);
+      setShowAddModal(false);
+      setNewUser({ name: "", email: "", role: "User", status: "active" });
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
+  };
+
+  const deleteUser = async (id: string) => {
+    try {
+      await api.deleteUser(id);
+      setUsers(users.filter((user) => user.id !== id));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+  if (loading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">User Management</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold">User Management</h2>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Add User
+        </button>
+      </div>
+
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-800">
@@ -35,6 +81,9 @@ const UserManagement: React.FC = () => {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
                 Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                Actions
               </th>
             </tr>
           </thead>
@@ -55,11 +104,29 @@ const UserManagement: React.FC = () => {
                     {user.status}
                   </span>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => deleteUser(user.id)}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {showAddModal && (
+        <UserModal
+          showModal={showAddModal}
+          newUser={newUser}
+          onClose={() => setShowAddModal(false)}
+          onSave={addUser}
+          onUserChange={handleUserChange}
+        />
+      )}
     </div>
   );
 };
