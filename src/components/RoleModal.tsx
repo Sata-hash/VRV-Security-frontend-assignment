@@ -36,6 +36,7 @@ const RoleModal: React.FC<RoleModalProps> = ({
               className="mt-2 p-2 w-full border rounded"
               value={role.name}
               onChange={(e) => onRoleChange(e.target.value)}
+              disabled={isEditing}
             />
             <div className="mt-4">
               <h4 className="text-sm font-medium text-gray-500 mb-2">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Role } from "../types";
 import { api } from "../services/api";
 import RoleModal from "./RoleModal";
+import { FiEdit2, FiTrash2, FiUserPlus, FiShield } from "react-icons/fi";
 
 const RoleManagement: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -85,62 +86,105 @@ const RoleManagement: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Role Management</h2>
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800 flex items-center">
+            <FiShield className="mr-2 text-blue-500" />
+            Role Management
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage roles and their permissions
+          </p>
+        </div>
         <button
           onClick={handleAddNew}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 ease-in-out shadow-sm hover:shadow-md w-full sm:w-auto justify-center"
         >
-          Add Role
+          <FiUserPlus className="mr-2" />
+          Add New Role
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {roles.map((role) => (
           <div
             key={role.id}
-            className="bg-white p-4 rounded-lg shadow hover:shadow-lg"
+            className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-100"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">{role.name}</h3>
-              <div>
-                <button
-                  onClick={() => handleEdit(role)}
-                  className="text-blue-600 hover:text-blue-900 mr-4"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => deleteRole(role.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  Delete
-                </button>
+            <div className="p-4 bg-gray-50 border-b border-gray-100">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium text-gray-800">
+                  {role.name}
+                </h3>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => handleEdit(role)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                    title="Edit role"
+                  >
+                    <FiEdit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => deleteRole(role.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                    title="Delete role"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="p-4">
               <h4 className="text-sm font-medium text-gray-500 mb-2">
                 Permissions:
               </h4>
               <div className="flex flex-wrap gap-2">
-                {role.permissions.map((permission) => (
-                  <span
-                    key={permission}
-                    className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                  >
-                    {permission}
+                {role.permissions.length > 0 ? (
+                  role.permissions.map((permission) => (
+                    <span
+                      key={permission}
+                      className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium capitalize transition-colors duration-150 hover:bg-blue-100"
+                    >
+                      {permission}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-sm text-gray-400 italic">
+                    No permissions assigned
                   </span>
-                ))}
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
+      {roles.length === 0 && (
+        <div className="text-center py-12">
+          <FiShield className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No roles</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Get started by creating a new role
+          </p>
+          <div className="mt-6">
+            <button
+              onClick={handleAddNew}
+              className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200"
+            >
+              <FiUserPlus className="mr-2" />
+              Add New Role
+            </button>
+          </div>
+        </div>
+      )}
 
       <RoleModal
         showModal={showModal}
