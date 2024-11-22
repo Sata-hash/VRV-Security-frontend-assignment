@@ -15,6 +15,11 @@ export const api = {
     return response.data;
   },
 
+  async updateUser(id: string, user: Omit<User, "id">) {
+    const response = await axios.put<User>(`${API_URL}/users/${id}`, user);
+    return response.data;
+  },
+
   async deleteUser(id: string) {
     await axios.delete(`${API_URL}/users/${id}`);
   },
