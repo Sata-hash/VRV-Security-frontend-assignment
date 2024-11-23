@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Role, User } from "../types";
 import { api } from "../services/api";
 import UserModal from "./UserModal";
 import { UserFormData } from "../schemas/userSchema";
-import { FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
-
+import { FiEdit2, FiTrash2, FiUserPlus, FiSearch } from "react-icons/fi";
+import { FaArrowUpLong, FaArrowDownLong } from "react-icons/fa6";
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -19,6 +19,16 @@ const UserManagement: React.FC = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof User;
+    direction: "asc" | "desc";
+  }>({ key: "name", direction: "asc" });
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
 
   useEffect(() => {
     fetchUsers();
@@ -63,7 +73,50 @@ const UserManagement: React.FC = () => {
     setIsEditing(true);
     setShowModal(true);
   };
+  const filteredAndSortedUsers = useMemo(() => {
+    let filtered = [...users];
 
+    // Searching for users
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (user) =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
+
+    // Filtering User on status
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((user) => user.status === statusFilter);
+    }
+
+    // Filtering User on rowl
+    if (roleFilter !== "all") {
+      filtered = filtered.filter((user) => user.role === roleFilter);
+    }
+
+    // Sorting User Ascending or Descending
+    filtered.sort((a, b) => {
+      const aValue = a[sortConfig.key].toLowerCase();
+      const bValue = b[sortConfig.key].toLowerCase();
+
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return filtered;
+  }, [users, searchTerm, sortConfig, statusFilter, roleFilter]);
+
+  const handleSort = (key: keyof User) => {
+    setSortConfig({
+      key,
+      direction:
+        sortConfig.key === key && sortConfig.direction === "asc"
+          ? "desc"
+          : "asc",
+    });
+  };
   const handleSave = async (formData: UserFormData) => {
     try {
       if (isEditing && currentUser.id) {
@@ -123,24 +176,74 @@ const UserManagement: React.FC = () => {
         </button>
       </div>
 
-      {/* Table Section */}
+      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Search Input Component*/}
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        </div>
+
+        {/* Status Filter  Component*/}
+        <select
+          value={statusFilter}
+          onChange={(e) =>
+            setStatusFilter(e.target.value as "all" | "active" | "inactive")
+          }
+          className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+        {/* Role Filter Component */}
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="all">All Roles</option>
+          {roles.map((role) => (
+            <option key={role.id} value={role.name}>
+              {role.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      {/* Table Section Component */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="max-h-[calc(100vh-250px)] overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-800 sticky top-0 z-10">
                 <tr>
-                  <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    Name
+                  {/* Sortable Column Headers */}
+                  <th
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider cursor-pointer flex gap-2"
+                    onClick={() => handleSort("name")}
+                  >
+                    Name{" "}
+                    {sortConfig.key === "name" &&
+                      (sortConfig.direction === "asc" ? (
+                        <FaArrowUpLong />
+                      ) : (
+                        <FaArrowDownLong />
+                      ))}
                   </th>
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider hidden md:table-cell">
-                    Email
+                    Email{" "}
                   </th>
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
-                    Role
+                    Role{" "}
                   </th>
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider hidden sm:table-cell">
-                    Status
+                    Status{" "}
                   </th>
                   <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-50 uppercase tracking-wider">
                     Actions
@@ -148,18 +251,18 @@ const UserManagement: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
+                {filteredAndSortedUsers.map((user) => (
                   <tr
                     key={user.id}
                     className="hover:bg-gray-50 transition-colors duration-150 ease-in-out"
                   >
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {/* <div className="flex-shrink-0 h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="flex-shrink-0 h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
                           <span className="text-sm font-medium text-gray-600">
                             {user.name.charAt(0).toUpperCase()}
                           </span>
-                        </div> */}
+                        </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
                             {user.name}
@@ -224,7 +327,7 @@ const UserManagement: React.FC = () => {
       </div>
 
       {/* No Users Message */}
-      {users.length === 0 && (
+      {filteredAndSortedUsers.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500">No users found</p>
         </div>
