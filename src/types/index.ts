@@ -1,7 +1,7 @@
 export interface MenuItems {
   id: string;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   path: string;
 }
 

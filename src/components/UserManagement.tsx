@@ -258,11 +258,11 @@ const UserManagement: React.FC = () => {
                   >
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        {/* <div className="flex-shrink-0 h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
                           <span className="text-sm font-medium text-gray-600">
                             {user.name.charAt(0).toUpperCase()}
                           </span>
-                        </div>
+                        </div> */}
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
                             {user.name}
