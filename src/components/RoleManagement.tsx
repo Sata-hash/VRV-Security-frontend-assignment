@@ -8,7 +8,7 @@ const RoleManagement: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentRole, setCurrentRole] = useState<
-    Omit<Role, "id"> & { id?: string }
+    Omit<Role, "_id"> & { _id?: string }
   >({
     name: "",
     permissions: [],
@@ -45,11 +45,11 @@ const RoleManagement: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      if (isEditing && currentRole.id) {
-        const updatedRole = await api.updateRole(currentRole.id, currentRole);
+      if (isEditing && currentRole._id) {
+        const updatedRole = await api.updateRole(currentRole._id, currentRole);
         setRoles(
           roles.map((role) =>
-            role.id === currentRole.id ? updatedRole : role,
+            role._id === currentRole._id ? updatedRole : role,
           ),
         );
       } else {
@@ -66,7 +66,7 @@ const RoleManagement: React.FC = () => {
   const deleteRole = async (id: string) => {
     try {
       await api.deleteRole(id);
-      setRoles(roles.filter((role) => role.id !== id));
+      setRoles(roles.filter((role) => role._id !== id));
     } catch (error) {
       console.error("Error deleting role:", error);
     }
@@ -117,7 +117,7 @@ const RoleManagement: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {roles.map((role) => (
           <div
-            key={role.id}
+            key={role._id}
             className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-100"
           >
             <div className="p-4 bg-gray-50 border-b border-gray-100">
@@ -134,7 +134,7 @@ const RoleManagement: React.FC = () => {
                     <FiEdit2 className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => deleteRole(role.id)}
+                    onClick={() => deleteRole(role._id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
                     title="Delete role"
                   >

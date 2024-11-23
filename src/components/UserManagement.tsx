@@ -10,7 +10,7 @@ const UserManagement: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<
-    Omit<User, "id"> & { id?: string }
+    Omit<User, "_id"> & { _id?: string }
   >({
     name: "",
     email: "",
@@ -119,11 +119,11 @@ const UserManagement: React.FC = () => {
   };
   const handleSave = async (formData: UserFormData) => {
     try {
-      if (isEditing && currentUser.id) {
-        const updatedUser = await api.updateUser(currentUser.id, formData);
+      if (isEditing && currentUser._id) {
+        const updatedUser = await api.updateUser(currentUser._id, formData);
         setUsers(
           users.map((user) =>
-            user.id === currentUser.id ? updatedUser : user,
+            user._id === currentUser._id ? updatedUser : user,
           ),
         );
       } else {
@@ -139,7 +139,7 @@ const UserManagement: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await api.deleteUser(id);
-      setUsers(users.filter((user) => user.id !== id));
+      setUsers(users.filter((user) => user._id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -210,7 +210,7 @@ const UserManagement: React.FC = () => {
         >
           <option value="all">All Roles</option>
           {roles.map((role) => (
-            <option key={role.id} value={role.name}>
+            <option key={role._id} value={role.name}>
               {role.name}
             </option>
           ))}
@@ -253,7 +253,7 @@ const UserManagement: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredAndSortedUsers.map((user) => (
                   <tr
-                    key={user.id}
+                    key={user._id}
                     className="hover:bg-gray-50 transition-colors duration-150 ease-in-out"
                   >
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
@@ -311,7 +311,7 @@ const UserManagement: React.FC = () => {
                         <FiEdit2 className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => handleDelete(user._id)}
                         className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50 transition-colors duration-200 ml-2"
                         title="Delete user"
                       >

@@ -11,7 +11,7 @@ export interface SidebarProps {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: string;
@@ -19,7 +19,7 @@ export interface User {
 }
 
 export interface Role {
-  id: string;
+  _id: string;
   name: string;
   permissions: string[];
 }

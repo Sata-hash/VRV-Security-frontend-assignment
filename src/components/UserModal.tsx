@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 interface UserModalProps {
   showModal: boolean;
-  user: Omit<User, "id"> & { id?: string };
+  user: Omit<User, "_id"> & { _id?: string };
   roles: Role[];
   isEditing: boolean;
   onClose: () => void;
@@ -87,7 +87,7 @@ const UserModal: React.FC<UserModalProps> = ({
                 }`}
               >
                 {roles.map((role) => (
-                  <option key={role.id} value={role.name}>
+                  <option key={role._id} value={role.name}>
                     {role.name}
                   </option>
                 ))}

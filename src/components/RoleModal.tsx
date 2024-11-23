@@ -3,8 +3,8 @@ import { Role } from "../types";
 
 interface RoleModalProps {
   showModal: boolean;
-  role: Omit<Role, "id"> & { id?: string }; // Changed from newRole to role
-  isEditing: boolean; // Add this prop
+  role: Omit<Role, "_id"> & { _id?: string }; 
+  isEditing: boolean; 
   onClose: () => void;
   onSave: () => void;
   onRoleChange: (name: string) => void;
