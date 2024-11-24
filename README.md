@@ -69,22 +69,36 @@ A modern and responsive Role-Based Access Control (RBAC) system built with React
 - Contextual feedback messages
 - Sortable and filterable tables
 
-## 🛠️ Setup and Installation
+## 🚀 Running Locally
 
-1. Clone the repository:
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (v16.0.0 or higher)
+- npm (v8.0.0 or higher)
+- Git
+
+### Step 1: Clone the Repository
+
 ```bash
-git clone [repository-url]
+git clone https://github.com/Atmalviya/VRV-Security-Assignment.git
+cd VRV-Security-Assignment
 ```
 
-2. Install dependencies:
+### Step 2: Install Dependencies
+
 ```bash
 npm install
 ```
 
-3. Start the development server:
+### Step 3: Start Development Server
+
 ```bash
 npm run dev
 ```
+
+The application will start running at `http://localhost:5173`
+
 
 ## 📋 Project Structure
 ```
