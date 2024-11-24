@@ -3,6 +3,7 @@ import { Role } from "../types";
 import { api } from "../services/api";
 import RoleModal from "./RoleModal";
 import { FiEdit2, FiTrash2, FiUserPlus, FiShield } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const RoleManagement: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -26,6 +27,9 @@ const RoleManagement: React.FC = () => {
       setRoles(data);
     } catch (error) {
       console.error("Error fetching roles:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to fetch roles",
+      );
     } finally {
       setLoading(false);
     }
@@ -52,14 +56,19 @@ const RoleManagement: React.FC = () => {
             role._id === currentRole._id ? updatedRole : role,
           ),
         );
+        toast.success("Role updated successfully");
       } else {
         const newRole = await api.createRole(currentRole);
         setRoles([...roles, newRole]);
+        toast.success("New role created successfully");
       }
       setShowModal(false);
       setCurrentRole({ name: "", permissions: [] });
     } catch (error) {
       console.error("Error saving role:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to save role",
+      );
     }
   };
 
@@ -67,8 +76,12 @@ const RoleManagement: React.FC = () => {
     try {
       await api.deleteRole(id);
       setRoles(roles.filter((role) => role._id !== id));
+      toast.success("Role deleted successfully");
     } catch (error) {
       console.error("Error deleting role:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete role",
+      );
     }
   };
 

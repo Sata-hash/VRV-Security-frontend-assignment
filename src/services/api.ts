@@ -14,12 +14,10 @@ export const api = {
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
-      if (axiosError.response?.status === 500) {
-        throw new Error(
-          axiosError.response.data.message || "Failed to fetch users",
-        );
-      }
-      throw error;
+      throw new Error(
+        axiosError.response?.data.message ||
+          "Failed to fetch users. Please try again later.",
+      );
     }
   },
 
@@ -29,12 +27,10 @@ export const api = {
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
-      if (axiosError.response?.status === 400) {
-        throw new Error(
-          axiosError.response.data.message || "Failed to create user",
-        );
-      }
-      throw error;
+      throw new Error(
+        axiosError.response?.data.message ||
+          "Failed to create user. Please check your input and try again.",
+      );
     }
   },
 

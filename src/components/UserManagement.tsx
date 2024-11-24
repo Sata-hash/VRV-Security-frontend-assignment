@@ -5,6 +5,10 @@ import UserModal from "./UserModal";
 import { UserFormData } from "../schemas/userSchema";
 import { FiEdit2, FiTrash2, FiUserPlus, FiSearch } from "react-icons/fi";
 import { FaArrowUpLong, FaArrowDownLong } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "react-router-dom";
+
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -126,13 +130,17 @@ const UserManagement: React.FC = () => {
             user._id === currentUser._id ? updatedUser : user,
           ),
         );
+        toast.success("User updated successfully!");
       } else {
         const newUser = await api.createUser(formData);
         setUsers([...users, newUser]);
+        toast.success("User created successfully!");
       }
       setShowModal(false);
     } catch (error) {
-      console.error("Error saving user:", error);
+      const axiosError = error as AxiosError<ErrorResponse>;
+      console.error("Error saving user:", axiosError.message);
+      toast.error(axiosError.message);
     }
   };
 
@@ -140,8 +148,13 @@ const UserManagement: React.FC = () => {
     try {
       await api.deleteUser(id);
       setUsers(users.filter((user) => user._id !== id));
+      toast.success("User deleted successfully!");
     } catch (error) {
-      console.error("Error deleting user:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred while deleting the user");
+      }
     }
   };
 
