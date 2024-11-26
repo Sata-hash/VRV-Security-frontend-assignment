@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-6 lg:p-8 bg-pink-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800 flex items-center">
           <span className="bg-blue-500 w-2 h-8 mr-3 rounded-full"></span>
